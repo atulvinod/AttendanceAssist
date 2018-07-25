@@ -1,0 +1,72 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    tools:context=".Home"
+    tools:layout_editor_absoluteY="81dp">
+
+
+    <LinearLayout
+        android:layout_width="298dp"
+        android:layout_height="296dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/homePredict"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="#1687a7"
+            android:text="Predict Attendance"
+            android:textAlignment="center"
+            tools:layout_editor_absoluteX="11dp"
+            tools:layout_editor_absoluteY="139dp" />
+
+        <Button
+            android:id="@+id/bunkwisePredict"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:layout_marginBottom="10dp"
+            android:background="#1687a7"
+            android:text="Bunkwise Prediction"
+            tools:layout_editor_absoluteX="197dp"
+            tools:layout_editor_absoluteY="139dp"
+            tools:text="Bunkwise prediction" />
+
+        <Button
+            android:id="@+id/config"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="#1687a7"
+            android:text="Configure"
+            tools:layout_editor_absoluteX="219dp"
+            tools:layout_editor_absoluteY="324dp"
+
+            tools:text="Configure" />
+
+        <Button
+            android:id="@+id/about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="#1687a7"
+            android:text="About"
+            tools:layout_editor_absoluteX="66dp"
+            tools:layout_editor_absoluteY="325dp"
+            tools:text="About" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
