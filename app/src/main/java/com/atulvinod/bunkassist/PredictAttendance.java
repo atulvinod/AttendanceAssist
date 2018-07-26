@@ -6,10 +6,12 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,8 @@ public class PredictAttendance extends Fragment {
     Button start,end,current,predict;
     String startDate,endDate,currentDateRegistered;
     EditText percent;
+    SharedPreferences pref;
+    SharedPreferences.Editor prefEdit;
 
     private OnFragmentInteractionListener mListener;
 
@@ -87,6 +91,21 @@ public class PredictAttendance extends Fragment {
          predict = (Button)v.findViewById(R.id.predict);
         percent = (EditText)v.findViewById(R.id.res);
 
+
+        pref = getActivity().getSharedPreferences(MainActivity.CONFIG,0);
+        prefEdit = pref.edit();
+
+        if(pref.getString(MainActivity.START,"start")!="start"){
+            startDate = pref.getString(MainActivity.START,"start");
+            endDate = pref.getString(MainActivity.END,"end");
+            start.setText(startDate.replace(" ","/"));
+            end.setText(endDate.replace(" ","/"));
+            Log.d("Asssit","Previous value set");
+        }else{
+            Log.d("Assist","Previous value not set");
+        }
+
+
          predict.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
@@ -96,6 +115,12 @@ public class PredictAttendance extends Fragment {
                      if(Result.dateFormatter(currentDateRegistered).compareTo(Result.dateFormatter(startDate))>0&&Result.dateFormatter(currentDateRegistered).compareTo(Result.dateFormatter(endDate))<0){
                          Intent i = new Intent(getContext(), Result.class);
                          Bundle data = new Bundle();
+
+                         prefEdit.putString(MainActivity.START,startDate);
+                         prefEdit.putString(MainActivity.END,endDate);
+                         prefEdit.commit();
+
+
 
                          data.putFloat("PERCENT", Float.parseFloat(percent.getText().toString()));
                          data.putString("CURRENT", currentDateRegistered);

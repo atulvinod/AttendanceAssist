@@ -19,7 +19,8 @@
         <item>9</item>
 
     </string-array>
-
+    <string name="welcome"> <u>Attendance is a struggle that we all have to go through :(</u></string>
+    <string name="welcomePlaceholder">Attendance assist provides an accurate prediction of your attendance</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

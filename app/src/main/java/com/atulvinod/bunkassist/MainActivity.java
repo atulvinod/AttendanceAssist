@@ -4,6 +4,7 @@ package com.atulvinod.bunkassist;
 import android.app.DialogFragment;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,7 +35,13 @@ public class MainActivity extends AppCompatActivity
     public static final String THU_KEY = "thu";
     public static final String FRI_KEY = "fri";
     public static final String CONFIG = "config";
+    public static final String START = "Start";
+    public static final String END = "End";
+
     int back=1;
+
+    static View v;
+
     Class setting,predict,home,bunk;
     Fragment settingFragment,predictFragment,homeFragment,bunkPredict;
 
@@ -69,7 +76,10 @@ public class MainActivity extends AppCompatActivity
         if(init == true){
             prefEdit.putBoolean("FirstTime",false);
             prefEdit.commit();
+            Intent i = new Intent(this,welcome.class);
+
             getSupportFragmentManager().beginTransaction().replace(R.id.frame,settingFragment).commit();
+            startActivity(i);
             }else{
             getSupportFragmentManager().beginTransaction().replace(R.id.frame,homeFragment).commit();
         }
