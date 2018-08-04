@@ -48,7 +48,7 @@ public class BunkPredict extends Fragment {
     SharedPreferences pref;
     SharedPreferences.Editor prefEdit;
 
-
+    Result r;
 
     public BunkPredict() {
         // Required empty public constructor
@@ -85,7 +85,7 @@ public class BunkPredict extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
        View v = inflater.inflate(R.layout.bunk_project_fragment,container,false);
-
+        r = new Result();
         start = (Button)v.findViewById(R.id.start);
         end = (Button)v.findViewById(R.id.end);
         current = (Button)v.findViewById(R.id.currentDate);
@@ -105,6 +105,7 @@ public class BunkPredict extends Fragment {
         }else{
             Log.d("Assist","Previous value not set");
         }
+        int init = getLeftClasses();
 
 
         predict.setOnClickListener(new View.OnClickListener() {
@@ -121,14 +122,21 @@ public class BunkPredict extends Fragment {
                         prefEdit.putString(MainActivity.END,endDate);
                         prefEdit.commit();
 
-                        data.putFloat("PERCENT", Float.parseFloat(percent.getText().toString()));
-                        data.putString("CURRENT", currentDateRegistered);
-                        data.putString("START", startDate);
-                        data.putString("END", endDate);
-                        data.putInt("BUNK",Integer.parseInt(bunk.getText().toString()));
-                        i.putExtras(data);
-                        startActivity(i);
+                        int getBunkValue = Integer.parseInt(bunk.getText().toString());
+                        Result r = new Result();
+                   Log.d("Classes left",""+getLeftClasses());
 
+//                        if(getBunkValue<getLeftClasses) {
+                            data.putFloat("PERCENT", Float.parseFloat(percent.getText().toString()));
+                            data.putString("CURRENT", currentDateRegistered);
+                            data.putString("START", startDate);
+                            data.putString("END", endDate);
+                            data.putInt("BUNK", Integer.parseInt(bunk.getText().toString()));
+                            i.putExtras(data);
+                            startActivity(i);
+//                        }else{
+//                            Toast.makeText(getContext(),"The classes you're going to bunk exceeds the no of classes left",Toast.LENGTH_SHORT).show();
+//                        }
                     }else{
                         Toast.makeText(getContext(),"Current Date Should be in between the semister",Toast.LENGTH_SHORT).show();
                     }
@@ -294,7 +302,7 @@ public class BunkPredict extends Fragment {
 
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            Toast.makeText(getContext(),"StartDateSet",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"Current date set",Toast.LENGTH_SHORT).show();
             currentDateRegistered = dayOfMonth+" "+monthOfYear+" "+year;
             current.setText(dayOfMonth+"/"+monthOfYear+"/"+year);
         }
@@ -304,7 +312,7 @@ public class BunkPredict extends Fragment {
 
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            Toast.makeText(getContext(),"StartDateSet",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"Start date set",Toast.LENGTH_SHORT).show();
             startDate = dayOfMonth+" "+monthOfYear+" "+year;
             start.setText(dayOfMonth+"/"+monthOfYear+"/"+year);
         }
@@ -314,17 +322,22 @@ public class BunkPredict extends Fragment {
 
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
-            Toast.makeText(getContext(),"EndDateSet",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(),"End date set",Toast.LENGTH_SHORT).show();
             endDate = dayOfMonth+" "+monthOfYear+" "+year;
             end.setText(dayOfMonth+"/"+monthOfYear+"/"+year);
 
         }
     };
+    public int getLeftClasses(){
+
+        return r.getClassesBetweenTwoDates(r.dateFormatter(today().replace("/"," ")),r.dateFormatter(endDate));
+    }
 
     public String today(){
         Calendar c = Calendar.getInstance();
         return c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.MONTH)+"/"+c.get(Calendar.YEAR);
     }
+
 
 
 

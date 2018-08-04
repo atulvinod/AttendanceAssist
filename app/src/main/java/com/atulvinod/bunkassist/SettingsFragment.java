@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -76,6 +77,14 @@ public class SettingsFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         pref = getActivity().getSharedPreferences(MainActivity.CONFIG,0);
         prefEdit = pref.edit();
+
+        Button b = (Button)view.findViewById(R.id.saveButton);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"Settings saved",Toast.LENGTH_SHORT).show();
+            }
+        });
 
         Spinner mon = (Spinner) view.findViewById(R.id.mon_val);
         Spinner tue = (Spinner) view.findViewById(R.id.tue_val);

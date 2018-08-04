@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,45 +21,51 @@ public class Result extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
-        if(getIntent().getExtras()!=null){
+        if(getIntent().getExtras()!=null) {
             Bundle data = getIntent().getExtras();
             String currentDate = data.getString("CURRENT");
             float percent = data.getFloat("PERCENT");
             String startDate = data.getString("START");
             String endDate = data.getString("END");
-            if(data.getInt("BUNK")==0){
-                bunkvalue=0;
-            }else{
-                bunkvalue=data.getInt("BUNK");
+            if (data.getInt("BUNK") == 0) {
+                bunkvalue = 0;
+            } else {
+                bunkvalue = data.getInt("BUNK");
             }
 
-            pref = getSharedPreferences(MainActivity.CONFIG,0);
-            mon = pref.getInt(MainActivity.MONDAY_KEY,1);
-            tue = pref.getInt(MainActivity.TUE_KEY,1);
-            wed = pref.getInt(MainActivity.WED_KEY,1);
-            thu = pref.getInt(MainActivity.THU_KEY,1);
-            fri = pref.getInt(MainActivity.FRI_KEY,1);
-            att = (TextView)findViewById(R.id.res);
-            disc = (TextView)findViewById(R.id.attendanceDisc);
-           if(bunkvalue==0) {
+            pref = getSharedPreferences(MainActivity.CONFIG, 0);
+            mon = pref.getInt(MainActivity.MONDAY_KEY, 1);
+            tue = pref.getInt(MainActivity.TUE_KEY, 1);
+            wed = pref.getInt(MainActivity.WED_KEY, 1);
+            thu = pref.getInt(MainActivity.THU_KEY, 1);
+            fri = pref.getInt(MainActivity.FRI_KEY, 1);
+            att = (TextView) findViewById(R.id.res);
+            disc = (TextView) findViewById(R.id.attendanceDisc);
+            if (bunkvalue == 0) {
                 disc.setText("Your attendance calculated with start of semister at " + startDate.replace(" ", "/") + " and end of semister " + endDate.replace(" ", "/") + " and current date is set as " + currentDate.replace(" ", "/"));
-            }else{
-               disc.setText("Your attendance calculated with start of semister at " + startDate.replace(" ", "/") + " and end of semister " + endDate.replace(" ", "/") + " and current date is set as " + currentDate.replace(" ", "/")+ " with "+bunkvalue+" classes bunked");
-           }
-            float prediction = attendancePredict(percent,startDate,endDate,currentDate);
-            if(prediction>75&&prediction<90){
-                att.setTextColor(getResources().getColor(R.color.yellow));
-
-            }else if(prediction>90){
-                att.setTextColor(getResources().getColor(R.color.green));
-            }else if(prediction<75){
-                att.setTextColor(getResources().getColor(R.color.red));
+            } else {
+                disc.setText("Your attendance calculated with start of semister at " + startDate.replace(" ", "/") + " and end of semister " + endDate.replace(" ", "/") + " and current date is set as " + currentDate.replace(" ", "/") + " with " + bunkvalue + " classes bunked");
             }
-            att.setText(prediction+"%");
+            float prediction = attendancePredict(percent, startDate, endDate, currentDate);
+
+            if(prediction<0){
+                Toast.makeText(getApplicationContext(),"You are bunking more classes than the classes that will be left",Toast.LENGTH_LONG).show();
+                att.setText(":/ %");
+                disc.setText("Set a different value of classes to bunk , There are only "+getClassesBetweenTwoDates(dateFormatter(currentDate),dateFormatter(endDate))+" classes that you can bunk");
+                return;
+            } else if (prediction > 75 && prediction < 90) {
+                    att.setTextColor(getResources().getColor(R.color.yellow));
+
+                } else if (prediction > 90) {
+                    att.setTextColor(getResources().getColor(R.color.green));
+                } else if (prediction < 75) {
+                    att.setTextColor(getResources().getColor(R.color.red));
+                }
+                att.setText(prediction + "%");
 
             }else{
-            finish();
-        }
+                finish();
+            }
 
 
 
