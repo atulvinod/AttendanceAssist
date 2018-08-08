@@ -46,6 +46,10 @@ public class PredictAttendance extends Fragment {
     EditText percent;
     SharedPreferences pref;
     SharedPreferences.Editor prefEdit;
+    boolean dateSet = false;
+
+    String[] startArray;
+    String[] endArray;
 
     private OnFragmentInteractionListener mListener;
 
@@ -101,7 +105,10 @@ public class PredictAttendance extends Fragment {
             start.setText(startDate.replace(" ","/"));
             end.setText(endDate.replace(" ","/"));
             Log.d("Asssit","Previous value set");
-        }else{
+            dateSet = true;
+            startArray = startDate.split(" ");
+            endArray = endDate.split(" ");
+
             Log.d("Assist","Previous value not set");
         }
 
@@ -152,13 +159,22 @@ public class PredictAttendance extends Fragment {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerStart();
+                if(dateSet==false){
+                    Calendar c = Calendar.getInstance();
+                    showDatePickerStart(c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.MONTH),c.get(Calendar.YEAR));
+                }else
+                    showDatePickerStart(Integer.parseInt(startArray[0]),Integer.parseInt(startArray[1]),Integer.parseInt(startArray[2]));
             }
         });
         end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              showDatePickerEnd();
+                if(dateSet==false){
+                    Calendar c = Calendar.getInstance();
+                    showDatePickerEnd(c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.MONTH),c.get(Calendar.YEAR));
+                }else{
+                    showDatePickerEnd(Integer.parseInt(endArray[0]),Integer.parseInt(endArray[1]),Integer.parseInt(endArray[2]));
+                }
             }
         });
         return v;
@@ -230,16 +246,16 @@ public class PredictAttendance extends Fragment {
 
 
 
-    private void showDatePickerStart() {
+    private void showDatePickerStart(int dd,int mm, int yy) {
         DatePickerFragment date = new DatePickerFragment();
         /**
          * Set Up Current Date Into dialog
          */
         Calendar calender = Calendar.getInstance();
         Bundle args = new Bundle();
-        args.putInt("year", calender.get(Calendar.YEAR));
-        args.putInt("month", calender.get(Calendar.MONTH));
-        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        args.putInt("year", yy);
+        args.putInt("month", mm);
+        args.putInt("day", dd);
         date.setArguments(args);
         /**
          * Set Call back to capture selected date
@@ -247,16 +263,16 @@ public class PredictAttendance extends Fragment {
         date.setCallBack(ondateStart);
         date.show(getActivity().getFragmentManager(), "Date Picker");
     }
-    private void showDatePickerEnd() {
+    private void showDatePickerEnd(int dd, int mm , int yy) {
         DatePickerFragment date = new DatePickerFragment();
         /**
          * Set Up Current Date Into dialog
          */
         Calendar calender = Calendar.getInstance();
         Bundle args = new Bundle();
-        args.putInt("year", calender.get(Calendar.YEAR));
-        args.putInt("month", calender.get(Calendar.MONTH));
-        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        args.putInt("year", yy);
+        args.putInt("month", mm);
+        args.putInt("day", dd);
         date.setArguments(args);
         /**
          * Set Call back to capture selected date

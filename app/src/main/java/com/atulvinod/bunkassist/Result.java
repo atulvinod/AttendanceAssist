@@ -3,6 +3,7 @@ package com.atulvinod.bunkassist;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,10 +54,10 @@ public class Result extends AppCompatActivity {
                 att.setText(":/ %");
                 disc.setText("Set a different value of classes to bunk , There are only "+getClassesBetweenTwoDates(dateFormatter(currentDate),dateFormatter(endDate))+" classes that you can bunk");
                 return;
-            } else if (prediction > 75 && prediction < 90) {
+            } else if (prediction >= 75 && prediction <= 90) {
                     att.setTextColor(getResources().getColor(R.color.yellow));
 
-                } else if (prediction > 90) {
+                } else if (prediction >= 90) {
                     att.setTextColor(getResources().getColor(R.color.green));
                 } else if (prediction < 75) {
                     att.setTextColor(getResources().getColor(R.color.red));
@@ -72,57 +73,57 @@ public class Result extends AppCompatActivity {
     }
 
     public static int getClassesBetweenTwoDates(Date startDate, Date endDate) {
-        int cycle = 0;
-        int classes = 0;
-        Calendar startCal = Calendar.getInstance();
-        startCal.setTime(startDate);
-        Calendar endCal = Calendar.getInstance();
-        endCal.setTime(endDate);
-        int workDays = 0;
+        Calendar start  = Calendar.getInstance();
+        start.setTime(startDate);
 
-        //Return 0 if start and end are the same
-        if (startCal.getTimeInMillis() == endCal.getTimeInMillis()) {
-            return 0;
-        }
-
-        if (startCal.getTimeInMillis() > endCal.getTimeInMillis()) {
-            startCal.setTime(endDate);
-            endCal.setTime(startDate);
-        }
+        Calendar end  = Calendar.getInstance();
+        end.setTime(endDate);
+        int SUNDAYS = 0;
+        int SATURDAYS =0;
+        int CLASS = 0;
+        int WORKING=0;
+        do{
 
 
-        do {
-            //excluding start date
-            cycle++;
-            int day = startCal.get(Calendar.DAY_OF_WEEK);
-            if (startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY && startCal.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
-                ++workDays;
-            }
-            switch(day){
+            switch(start.get(Calendar.DAY_OF_WEEK)){
                 case Calendar.MONDAY:
-                    classes += mon;
+                    CLASS += mon;
+                    WORKING++;
                     break;
                 case Calendar.TUESDAY:
-                    classes += tue;
+                    CLASS += tue;
+                    WORKING++;
                     break;
                 case Calendar.WEDNESDAY:
-                    classes += wed;
+                    CLASS += wed;
+                    WORKING++;
                     break;
                 case Calendar.THURSDAY:
-                    classes += thu;
+                    CLASS += thu;
+                    WORKING++;
                     break;
                 case Calendar.FRIDAY:
-                    classes += fri;
+                    CLASS += fri;
+                    WORKING++;
                     break;
-                default:
+                case Calendar.SATURDAY:
+                    SATURDAYS++;
+
+                    break;
+                case Calendar.SUNDAY:
+                    SUNDAYS++;
                     break;
 
             }
-            startCal.add(Calendar.DAY_OF_MONTH, 1);
 
-        } while (startCal.getTimeInMillis() <= endCal.getTimeInMillis()); //excluding end date
 
-        return classes;
+
+            start.add(Calendar.DAY_OF_MONTH, 1);
+        }while(start.getTimeInMillis()<=end.getTimeInMillis());
+        Log.d("CALCULATE WORKING","WORKING DAYS "+WORKING);
+
+        return CLASS;
+
     }
 
 
@@ -163,12 +164,20 @@ public class Result extends AppCompatActivity {
 
     public static float attendancePredict(float percent,String start,String end,String now){
 
-
+        float delivered = getClassesBetweenTwoDates(dateFormatter(start),dateFormatter(now));
         float attended = Math.round((percent*getClassesBetweenTwoDates(dateFormatter(start), dateFormatter(now)))/100);
         float total = getClassesBetweenTwoDates(dateFormatter(start), dateFormatter(end));
         float left = getClassesBetweenTwoDates(dateFormatter(now),dateFormatter(end))-getDecrement(dateFormatter(now));
         float predict = Math.round(((attended+left-bunkvalue)/total)*100);
+        Log.d("PREDICT","TOTAL CLASS "+total);
+        Log.d("PREDICT","LEFT "+left);
+        Log.d("PREDICT","PREDICTION "+predict);
+        Log.d("PREDICT","ATTENDED "+attended);
+        Log.d("PREDICT","DELIVERED DECREMENTED"+(delivered-getDecrement(dateFormatter(now))));
+        Log.d("PREDICT","DELIVERED "+delivered);
        return predict;
+
+
 
     }
 

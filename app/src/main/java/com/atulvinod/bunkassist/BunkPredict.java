@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -47,7 +48,10 @@ public class BunkPredict extends Fragment {
     EditText percent,bunk;
     SharedPreferences pref;
     SharedPreferences.Editor prefEdit;
-
+    boolean dateSet = false;
+    String[] startArray;
+    String[] endArray;
+    TextView classesYouCanBunk;
     Result r;
 
     public BunkPredict() {
@@ -93,6 +97,8 @@ public class BunkPredict extends Fragment {
         percent = (EditText)v.findViewById(R.id.res);
         bunk = (EditText)v.findViewById(R.id.bunkValue);
 
+
+
         pref = getActivity().getSharedPreferences(MainActivity.CONFIG,0);
         prefEdit = pref.edit();
 
@@ -101,11 +107,21 @@ public class BunkPredict extends Fragment {
             endDate = pref.getString(MainActivity.END,"end");
             start.setText(startDate.replace(" ","/"));
             end.setText(endDate.replace(" ","/"));
-            Log.d("Asssit","Previous value set");
+            startArray = startDate.split(" ");
+            endArray = endDate.split(" ");
+            Log.d("Assist","startIndex "+startArray[0]);
+            Log.d("Assist","End index "+endArray[0]);
+            Log.d("Assist","Previous value set");
+            dateSet = true;
+
+            String today = today().replace("/"," ");
+            Date todayDate = Result.dateFormatter(today);
+            Date end = Result.dateFormatter(endDate);
+
         }else{
             Log.d("Assist","Previous value not set");
         }
-        int init = getLeftClasses();
+
 
 
         predict.setOnClickListener(new View.OnClickListener() {
@@ -124,9 +140,8 @@ public class BunkPredict extends Fragment {
 
                         int getBunkValue = Integer.parseInt(bunk.getText().toString());
                         Result r = new Result();
-                   Log.d("Classes left",""+getLeftClasses());
 
-//                        if(getBunkValue<getLeftClasses) {
+
                             data.putFloat("PERCENT", Float.parseFloat(percent.getText().toString()));
                             data.putString("CURRENT", currentDateRegistered);
                             data.putString("START", startDate);
@@ -134,9 +149,7 @@ public class BunkPredict extends Fragment {
                             data.putInt("BUNK", Integer.parseInt(bunk.getText().toString()));
                             i.putExtras(data);
                             startActivity(i);
-//                        }else{
-//                            Toast.makeText(getContext(),"The classes you're going to bunk exceeds the no of classes left",Toast.LENGTH_SHORT).show();
-//                        }
+
                     }else{
                         Toast.makeText(getContext(),"Current Date Should be in between the semister",Toast.LENGTH_SHORT).show();
                     }
@@ -160,13 +173,23 @@ public class BunkPredict extends Fragment {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerStart();
+                if(dateSet==false){
+                    Calendar c = Calendar.getInstance();
+                    showDatePickerStart(c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.MONTH),c.get(Calendar.YEAR));
+                }else
+                showDatePickerStart(Integer.parseInt(startArray[0]),Integer.parseInt(startArray[1]),Integer.parseInt(startArray[2]));
             }
         });
         end.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDatePickerEnd();
+
+                 if(dateSet==false){
+                     Calendar c = Calendar.getInstance();
+                     showDatePickerEnd(c.get(Calendar.DAY_OF_MONTH),c.get(Calendar.MONTH),c.get(Calendar.YEAR));
+                 }else{
+                     showDatePickerEnd(Integer.parseInt(endArray[0]),Integer.parseInt(endArray[1]),Integer.parseInt(endArray[2]));
+                 }
             }
         });
 
@@ -218,60 +241,39 @@ public class BunkPredict extends Fragment {
     }
 
 
-    public static class DatePickerFragment extends DialogFragment {
-        DatePickerDialog.OnDateSetListener ondateSet;
-        private int year, month, day;
-
-        public DatePickerFragment() {}
-
-        public void setCallBack(DatePickerDialog.OnDateSetListener ondate) {
-            ondateSet = ondate;
-        }
-
-        @SuppressLint("NewApi")
-        @Override
-        public void setArguments(Bundle args) {
-            super.setArguments(args);
-            year = args.getInt("year");
-            month = args.getInt("month");
-            day = args.getInt("day");
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return new DatePickerDialog(getActivity(), ondateSet, year, month, day);
-        }
-    }
 
 
 
-    private void showDatePickerStart() {
+
+    private void showDatePickerStart(int dd,int mm, int yy) {
         PredictAttendance.DatePickerFragment date = new PredictAttendance.DatePickerFragment();
         /**
          * Set Up Current Date Into dialog
          */
         Calendar calender = Calendar.getInstance();
         Bundle args = new Bundle();
-        args.putInt("year", calender.get(Calendar.YEAR));
-        args.putInt("month", calender.get(Calendar.MONTH));
-        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        args.putInt("year", yy);
+        args.putInt("month", mm);
+        args.putInt("day", dd);
         date.setArguments(args);
         /**
          * Set Call back to capture selected date
          */
+
+
         date.setCallBack(ondateStart);
         date.show(getActivity().getFragmentManager(), "Date Picker");
     }
-    private void showDatePickerEnd() {
+    private void showDatePickerEnd(int dd,int mm,int yy) {
         PredictAttendance.DatePickerFragment date = new PredictAttendance.DatePickerFragment();
         /**
          * Set Up Current Date Into dialog
          */
-        Calendar calender = Calendar.getInstance();
+
         Bundle args = new Bundle();
-        args.putInt("year", calender.get(Calendar.YEAR));
-        args.putInt("month", calender.get(Calendar.MONTH));
-        args.putInt("day", calender.get(Calendar.DAY_OF_MONTH));
+        args.putInt("year", yy);
+        args.putInt("month", mm);
+        args.putInt("day", dd);
         date.setArguments(args);
         /**
          * Set Call back to capture selected date
@@ -328,15 +330,13 @@ public class BunkPredict extends Fragment {
 
         }
     };
-    public int getLeftClasses(){
 
-        return r.getClassesBetweenTwoDates(r.dateFormatter(today().replace("/"," ")),r.dateFormatter(endDate));
-    }
 
     public String today(){
         Calendar c = Calendar.getInstance();
         return c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.MONTH)+"/"+c.get(Calendar.YEAR);
     }
+
 
 
 
