@@ -23,15 +23,27 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="2dp"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="Attendance Assist"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="2dp"
+        android:text="To suggest features, bugreport and info contact me at"
+        android:textSize="10sp"
+        android:textStyle="italic" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="2dp"
         android:text="atulvinod1911@gmail.com"
         android:textColor="#e4d1d3" />
 

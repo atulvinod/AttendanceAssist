@@ -1,9 +1,13 @@
 package com.atulvinod.bunkassist;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,6 +18,7 @@ import java.util.Date;
 public class Result extends AppCompatActivity {
 
     public static int mon,tue,wed,thu,fri;
+    public int DELIVERED = 0,ATTENDED = 0,LEFT =0,TOTAL = 0;
     SharedPreferences pref;
     TextView att,disc;
     static int bunkvalue;
@@ -21,6 +26,23 @@ public class Result extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
+        Button details = (Button)findViewById(R.id.details);
+        details.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent det = new Intent(getApplicationContext(),Details.class);
+                Bundle b = new Bundle();
+                b.putInt("DELIVERED",DELIVERED);
+                b.putInt("ATTENDED",ATTENDED);
+                b.putInt("TOTAL",TOTAL);
+                b.putInt("LEFT",LEFT);
+                det.putExtras(b);
+
+
+                startActivity(det);
+            }
+        });
+        details.setVisibility(View.INVISIBLE);
 
         if(getIntent().getExtras()!=null) {
             Bundle data = getIntent().getExtras();
@@ -62,6 +84,7 @@ public class Result extends AppCompatActivity {
                 } else if (prediction < 75) {
                     att.setTextColor(getResources().getColor(R.color.red));
                 }
+                details.setVisibility(View.VISIBLE);
                 att.setText(prediction + "%");
 
             }else{
@@ -162,10 +185,10 @@ public class Result extends AppCompatActivity {
         }
     }
 
-    public static float attendancePredict(float percent,String start,String end,String now){
+    public  float attendancePredict(float percent,String start,String end,String now){
 
         float delivered = getClassesBetweenTwoDates(dateFormatter(start),dateFormatter(now));
-        float attended = Math.round((percent*getClassesBetweenTwoDates(dateFormatter(start), dateFormatter(now)))/100);
+        float attended = ((percent*getClassesBetweenTwoDates(dateFormatter(start), dateFormatter(now)))/100);
         float total = getClassesBetweenTwoDates(dateFormatter(start), dateFormatter(end));
         float left = getClassesBetweenTwoDates(dateFormatter(now),dateFormatter(end))-getDecrement(dateFormatter(now));
         float predict = Math.round(((attended+left-bunkvalue)/total)*100);
@@ -175,7 +198,13 @@ public class Result extends AppCompatActivity {
         Log.d("PREDICT","ATTENDED "+attended);
         Log.d("PREDICT","DELIVERED DECREMENTED"+(delivered-getDecrement(dateFormatter(now))));
         Log.d("PREDICT","DELIVERED "+delivered);
-       return predict;
+//        createDialog("Total Classes "+total+"\n"+"Total Classes left "+left+"\n"+"Classes Attended"+attended+"\n"+"Delivered"+delivered+"\n");
+        TOTAL = (int)total;
+        LEFT = (int)left;
+        ATTENDED = (int)attended;
+        DELIVERED = (int)delivered;
+
+        return predict;
 
 
 
@@ -190,6 +219,15 @@ public class Result extends AppCompatActivity {
             e.printStackTrace();
         }
         return formattedDate;
+    }
+
+    public  void createDialog(String text){
+        AlertDialog.Builder alert = new AlertDialog.Builder(getApplicationContext());
+        alert.setTitle("Analysis");
+        alert.setCancelable(true);
+        alert.setMessage(text);
+        alert.create();
+        alert.show();
     }
 
 

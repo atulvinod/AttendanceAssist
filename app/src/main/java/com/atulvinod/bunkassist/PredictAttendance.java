@@ -334,6 +334,7 @@ public class PredictAttendance extends Fragment {
         Calendar c = Calendar.getInstance();
         return c.get(Calendar.DAY_OF_MONTH)+"/"+c.get(Calendar.MONTH)+"/"+c.get(Calendar.YEAR);
     }
+
 }
 
 

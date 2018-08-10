@@ -7,18 +7,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Home.OnFragmentInteractionListener} interface
+ * {@link AboutFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Home#newInstance} factory method to
+ * Use the {@link AboutFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Home extends Fragment {
+public class AboutFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,15 +27,9 @@ public class Home extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    Fragment preFrag = null;
-    Fragment setFrag = null;
-    Fragment bunkFrag =null;
-    Fragment aboutFragment = null;
-
-
     private OnFragmentInteractionListener mListener;
 
-    public Home() {
+    public AboutFragment() {
         // Required empty public constructor
     }
 
@@ -46,11 +39,11 @@ public class Home extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Home.
+     * @return A new instance of fragment AboutFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static Home newInstance(String param1, String param2) {
-        Home fragment = new Home();
+    public static AboutFragment newInstance(String param1, String param2) {
+        AboutFragment fragment = new AboutFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -71,56 +64,8 @@ public class Home extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        View v = inflater.inflate(R.layout.fragment_home, container, false);
-        Class predict = PredictAttendance.class;
-        Class setting = SettingsFragment.class;
-        Class bunk = BunkPredict.class;
-        Class about = AboutFragment.class;
-
-        try{
-            preFrag = (Fragment)predict.newInstance();
-            setFrag = (Fragment)setting.newInstance();
-            bunkFrag = (Fragment)bunk.newInstance();
-            aboutFragment = (Fragment)about.newInstance();
-
-        }catch(Exception e){
-
-        }
-        Button predictAction = (Button)v.findViewById(R.id.homePredict);
-        predictAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,preFrag).commit();
-            }
-        });
-        Button settings = (Button)v.findViewById(R.id.config);
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,setFrag).commit();
-            }
-        });
-        Button bunkwise = (Button)v.findViewById(R.id.bunkwisePredict);
-        bunkwise.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,bunkFrag).commit();
-            }
-        });
-
-        Button aboutButton = (Button)v.findViewById(R.id.about);
-        aboutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,aboutFragment).commit();
-
-            }
-        });
-
-        return v;
+        return inflater.inflate(R.layout.fragment_about, container, false);
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

@@ -27,7 +27,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,BunkPredict.OnFragmentInteractionListener,Home.OnFragmentInteractionListener,SettingsFragment.OnFragmentInteractionListener,PredictAttendance.OnFragmentInteractionListener {
+        implements AboutFragment.OnFragmentInteractionListener,NavigationView.OnNavigationItemSelectedListener,BunkPredict.OnFragmentInteractionListener,Home.OnFragmentInteractionListener,SettingsFragment.OnFragmentInteractionListener,PredictAttendance.OnFragmentInteractionListener {
 
     public static final String MONDAY_KEY = "mon";
     public static final String TUE_KEY = "tue";
@@ -42,8 +42,8 @@ public class MainActivity extends AppCompatActivity
 
     static View v;
 
-    Class setting,predict,home,bunk;
-    Fragment settingFragment,predictFragment,homeFragment,bunkPredict;
+    Class setting,predict,home,bunk,about;
+    Fragment settingFragment,predictFragment,homeFragment,bunkPredict,aboutFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +59,13 @@ public class MainActivity extends AppCompatActivity
          predict = PredictAttendance.class;
          bunk = BunkPredict.class;
          home = Home.class;
+         about = AboutFragment.class;
         try {
             settingFragment= (Fragment) setting.newInstance();
             predictFragment = (Fragment)predict.newInstance();
             homeFragment = (Fragment) home.newInstance();
             bunkPredict = (Fragment) bunk.newInstance();
+            aboutFragment = (Fragment)about.newInstance();
 
         } catch (Exception e) {
             getSupportFragmentManager().beginTransaction().replace(R.id.frame,homeFragment).commit();
@@ -165,6 +167,9 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame,bunkPredict).commit();
                 getSupportActionBar().setTitle("Bunkwise predict Attendance");
                 break;
+            case R.id.About:
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame,aboutFragment).commit();
+                getSupportActionBar().setTitle("About me :)");
         }
 
 
