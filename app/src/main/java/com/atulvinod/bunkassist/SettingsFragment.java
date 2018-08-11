@@ -72,6 +72,8 @@ public class SettingsFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        final Class home = Home.class;
+
         // Inflate the layout for this fragment
         Log.d("frag","Added Fragment");
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
@@ -83,6 +85,17 @@ public class SettingsFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(),"Settings saved",Toast.LENGTH_SHORT).show();
+                SharedPreferences pref = getActivity().getSharedPreferences(MainActivity.CONFIG,0);
+
+                if(pref.getString(MainActivity.START,"start")=="start"){
+                    Fragment homeFrag = null;
+                    try{
+                        homeFrag = (Fragment)home.newInstance();
+                    }catch(Exception e){
+
+                    }
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,homeFrag).commit();
+                }
             }
         });
 

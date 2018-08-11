@@ -1,13 +1,20 @@
 package com.atulvinod.bunkassist;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+
+
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
 
 /**
@@ -78,47 +85,89 @@ public class Home extends Fragment {
         Class bunk = BunkPredict.class;
         Class about = AboutFragment.class;
 
-        try{
-            preFrag = (Fragment)predict.newInstance();
-            setFrag = (Fragment)setting.newInstance();
-            bunkFrag = (Fragment)bunk.newInstance();
-            aboutFragment = (Fragment)about.newInstance();
+        try {
+            preFrag = (Fragment) predict.newInstance();
+            setFrag = (Fragment) setting.newInstance();
+            bunkFrag = (Fragment) bunk.newInstance();
+            aboutFragment = (Fragment) about.newInstance();
 
-        }catch(Exception e){
+        } catch (Exception e) {
 
         }
-        Button predictAction = (Button)v.findViewById(R.id.homePredict);
+        Button predictAction = (Button) v.findViewById(R.id.homePredict);
         predictAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,preFrag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame, preFrag).commit();
             }
         });
-        Button settings = (Button)v.findViewById(R.id.config);
+        Button settings = (Button) v.findViewById(R.id.config);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,setFrag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame, setFrag).commit();
             }
         });
-        Button bunkwise = (Button)v.findViewById(R.id.bunkwisePredict);
+        Button bunkwise = (Button) v.findViewById(R.id.bunkwisePredict);
         bunkwise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,bunkFrag).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame, bunkFrag).commit();
             }
         });
 
-        Button aboutButton = (Button)v.findViewById(R.id.about);
+        Button aboutButton = (Button) v.findViewById(R.id.about);
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame,aboutFragment).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.frame, aboutFragment).commit();
 
             }
         });
+        SharedPreferences pref = getActivity().getSharedPreferences(MainActivity.CONFIG, 0);
+        SharedPreferences.Editor prefEdit = pref.edit();
 
+
+        if (pref.getBoolean("Target", true) == true) {
+
+
+            prefEdit.putBoolean("Target", false);
+            prefEdit.commit();
+            showTargets(v);
+
+
+
+        }
         return v;
+    }
+    public void showTargets(View v){
+        final View x = v;
+        new GuideView.Builder(getContext()).setGuideListener(new GuideView.GuideListener() { //Guide for Predict attendance
+            @Override
+            public void onDismiss(View view) {
+                new GuideView.Builder(getContext()).setGuideListener(new GuideView.GuideListener() { //Guide for config app
+                    @Override
+                    public void onDismiss(View view) {
+                        new GuideView.Builder(getContext()).setGuideListener(new GuideView.GuideListener() { //GuideView for bunkPredict
+                            @Override
+                            public void onDismiss(View view) { // GuideView for About
+                                new GuideView.Builder(getContext()).setGuideListener(new GuideView.GuideListener() {
+                                    @Override
+                                    public void onDismiss(View view) {
+                                        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.drawer_layout);
+
+                                        drawer.openDrawer(Gravity.START);
+                                    }
+                                }).setTitle("Attendance Assist").setTargetView(x.findViewById(R.id.about)).setContentText("Finally, Welcome to Attendance Assist, for additional info").setDismissType(GuideView.DismissType.anywhere).setGravity(GuideView.Gravity.auto).build().show();
+                            }
+                        }).setContentText("Predict attendance based on how may classes you'll bunk").setDismissType(GuideView.DismissType.anywhere).setGravity(GuideView.Gravity.auto).setTargetView(x.findViewById(R.id.bunkwisePredict)).build().show();
+                    }
+                }).setTargetView(x.findViewById(R.id.config)).setContentText("Configure App from here").setGravity(GuideView.Gravity.auto).setDismissType(GuideView.DismissType.anywhere).build().show();
+            }
+        }).setContentText("Use this when you want to calculate you attendance based upon current one").setGravity(GuideView.Gravity.auto).setTargetView(x.findViewById(R.id.homePredict)).setDismissType(GuideView.DismissType.anywhere).build().show();
+
+
+
     }
 
 

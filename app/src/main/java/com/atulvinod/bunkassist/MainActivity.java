@@ -13,6 +13,7 @@ import android.support.design.widget.Snackbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity
             getSupportFragmentManager().beginTransaction().replace(R.id.frame,homeFragment).commit();
         }
 
-
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
 
 
@@ -81,15 +82,17 @@ public class MainActivity extends AppCompatActivity
             Intent i = new Intent(this,welcome.class);
 
             getSupportFragmentManager().beginTransaction().replace(R.id.frame,settingFragment).commit();
+
             startActivity(i);
             }else{
             getSupportFragmentManager().beginTransaction().replace(R.id.frame,homeFragment).commit();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
+
         toggle.syncState();
 
 
